@@ -1,5 +1,6 @@
 # User Manager
 This standard CRUD application
+
 Fronted: Spring MVC
 
 ## Технологии
@@ -15,4 +16,4 @@ Fronted: Spring MVC
 - Alexander (redandspring@gmail.com)
 
 ## Установка
-1. 
+- Создание и заполнение БД - dump.sql
