@@ -21,13 +21,9 @@ public class UserController
     @Resource
     private UserService userService;
 
-    @Autowired
-    private Environment environment;
-
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String main(final Model model)
     {
-        String mysqlpassword = System.getProperty("mysqlpassword");
         model.addAttribute("titlePage", "Main Page");
         return "main";
     }
@@ -57,7 +53,7 @@ public class UserController
     }
 
     @RequestMapping(value = "/users/edit/{id}", method = RequestMethod.GET)
-    public String edit(@PathVariable("id") int id, Model model)
+    public String edit(@PathVariable("id") final int id, final Model model)
     {
         User user = userService.getUser(id);
         model.addAttribute("user", user);
@@ -67,7 +63,7 @@ public class UserController
     }
 
     @RequestMapping(value = "/users/remove/{id}", method = RequestMethod.GET)
-    public String remove(@PathVariable("id") int id)
+    public String remove(@PathVariable("id") final int id)
     {
         userService.delete(id);
         return "redirect:/users";
@@ -86,7 +82,7 @@ public class UserController
     }
 
     @RequestMapping(value = "/users/save", method = RequestMethod.POST)
-    public String saveUser(@ModelAttribute("user") User user)
+    public String saveUser(@ModelAttribute("user") final User user)
     {
         if (user.getId() == 0)
         {
