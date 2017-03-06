@@ -17,3 +17,4 @@ Fronted: Spring MVC
 
 ## Установка
 - Создание и заполнение БД - dump.sql
+- Запуск может быть с параметром -Dmysqlpassword=YOUR_ROOT_PWD_DB
