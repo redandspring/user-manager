@@ -16,7 +16,7 @@ import ru.redandspring.usermanager.service.UserService;
 @Controller
 public class UserController
 {
-    private static final int PAGE_SIZE = 5;
+    public static final int PAGE_SIZE = 5;
 
     @Resource
     private UserService userService;
@@ -32,14 +32,24 @@ public class UserController
     public String list(@RequestParam(value="page", required = false, defaultValue = "1") final int page, final Model model)
     {
         int countAll = userService.count();
-        List<User> users = userService.getListUsers(PAGE_SIZE * (page - 1), PAGE_SIZE);
-        model.addAttribute("users", users);
+
+        model.addAttribute("users", listAllUsers(getOffset(page)));
         model.addAttribute("page", page);
         model.addAttribute("countAll", countAll);
         model.addAttribute("countPages", (int) Math.ceil( (double) countAll/PAGE_SIZE));
         model.addAttribute("titlePage", "Users List");
         model.addAttribute("includeView", "users");
         return "main";
+    }
+
+    private List<User> listAllUsers(final int offset)
+    {
+        return userService.getListUsers(offset, PAGE_SIZE);
+    }
+
+    public static int getOffset(final int page)
+    {
+        return PAGE_SIZE * (page - 1);
     }
 
     @RequestMapping(value = "/users/add", method = RequestMethod.GET)
