@@ -16,11 +16,11 @@
   <table class="table table-hover table-bordered">
     <tr>
       <th>ID</th>
-      <th>Name</th>
-      <th>Age</th>
-      <th>Admin?</th>
-      <th>Created date</th>
-      <th>action</th>
+      <th><spring:message code="inc.users.name" /></th>
+      <th><spring:message code="inc.users.age" /></th>
+      <th><spring:message code="inc.users.admin" /></th>
+      <th><spring:message code="inc.users.createdDate" /></th>
+      <th><spring:message code="inc.users.action" /></th>
     </tr>
     <c:forEach items="${users}" var="user" >
       <tr>

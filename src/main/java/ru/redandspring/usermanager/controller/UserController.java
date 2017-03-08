@@ -3,17 +3,21 @@ package ru.redandspring.usermanager.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import ru.redandspring.usermanager.model.User;
 import ru.redandspring.usermanager.service.UserService;
+import ru.redandspring.usermanager.utils.MiUtil;
 
 @Controller
+@RequestMapping(value = "/users")
 public class UserController
 {
     public static final int PAGE_SIZE = 5;
@@ -21,19 +25,12 @@ public class UserController
     @Resource
     private UserService userService;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String main(final Model model)
-    {
-        model.addAttribute("titlePage", "Main Page");
-        return "main";
-    }
-
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public String list(@RequestParam(value="page", required = false, defaultValue = "1") final int page, final Model model)
     {
         int countAll = userService.count();
 
-        model.addAttribute("users", listAllUsers(getOffset(page)));
+        model.addAttribute("users", userService.getListUsers(MiUtil.getOffset(page, PAGE_SIZE), PAGE_SIZE));
         model.addAttribute("page", page);
         model.addAttribute("countAll", countAll);
         model.addAttribute("countPages", (int) Math.ceil( (double) countAll/PAGE_SIZE));
@@ -42,17 +39,7 @@ public class UserController
         return "main";
     }
 
-    private List<User> listAllUsers(final int offset)
-    {
-        return userService.getListUsers(offset, PAGE_SIZE);
-    }
-
-    public static int getOffset(final int page)
-    {
-        return PAGE_SIZE * (page - 1);
-    }
-
-    @RequestMapping(value = "/users/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String add(final Model model)
     {
         User user = new User();
@@ -62,7 +49,7 @@ public class UserController
         return "main";
     }
 
-    @RequestMapping(value = "/users/edit/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String edit(@PathVariable("id") final int id, final Model model)
     {
         User user = userService.getUser(id);
@@ -72,14 +59,14 @@ public class UserController
         return "main";
     }
 
-    @RequestMapping(value = "/users/remove/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/remove/{id}", method = RequestMethod.GET)
     public String remove(@PathVariable("id") final int id)
     {
         userService.delete(id);
         return "redirect:/users";
     }
 
-    @RequestMapping(value = "/users/search", method = RequestMethod.POST)
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String search(@RequestParam(value="query", required = true) final String query, final Model model)
     {
         List<User> users = userService.getUsersByName(query);
@@ -91,9 +78,15 @@ public class UserController
         return "main";
     }
 
-    @RequestMapping(value = "/users/save", method = RequestMethod.POST)
-    public String saveUser(@ModelAttribute("user") final User user)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public String saveUser(@Valid final User user, final BindingResult result, final Model model)
     {
+        if (result.hasErrors()) {
+            model.addAttribute("titlePage", "Form has Errors");
+            model.addAttribute("includeView", "user-form");
+            return "main";
+        }
+
         if (user.getId() == 0)
         {
             userService.addUser(user);

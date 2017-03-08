@@ -3,6 +3,9 @@ package ru.redandspring.usermanager.model;
 import java.util.Date;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "User")
@@ -13,10 +16,14 @@ public class User
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotEmpty(message = "Name require not empty")
+    @Size(min = 3, message = "Name size >= 3")
     @Column(name = "name")
     private String name;
+
     @Column(name = "age")
     private int age;
+
     @Column(name = "isAdmin")
     private boolean admin;
     @Column(name = "createdDate")

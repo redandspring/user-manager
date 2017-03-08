@@ -15,10 +15,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ExtendedModelMap;
+import org.springframework.validation.BindingResult;
 
 import ru.redandspring.usermanager.controller.UserController;
 import ru.redandspring.usermanager.model.User;
 import ru.redandspring.usermanager.service.UserService;
+import ru.redandspring.usermanager.utils.MiUtil;
 
 public class UserControllerTest
 {
@@ -41,7 +43,7 @@ public class UserControllerTest
         final int page = 1;
 
         UserService userService = mock(UserService.class);
-        when(userService.getListUsers(UserController.getOffset(page), UserController.PAGE_SIZE)).thenReturn(users);
+        when(userService.getListUsers(MiUtil.getOffset(page, UserController.PAGE_SIZE), UserController.PAGE_SIZE)).thenReturn(users);
 
         UserController userController = new UserController();
 
@@ -78,11 +80,16 @@ public class UserControllerTest
             }
         }).when(userService).addUser(newUser);
 
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        ExtendedModelMap modelMap = new ExtendedModelMap();
+
         UserController userController = new UserController();
 
         ReflectionTestUtils.setField(userController, "userService", userService);
 
-        String result = userController.saveUser(newUser);
+        String result = userController.saveUser(newUser, bindingResult, modelMap);
 
         Assert.assertEquals("redirect:/users", result);
         Assert.assertEquals(31, users.get(1).getId());

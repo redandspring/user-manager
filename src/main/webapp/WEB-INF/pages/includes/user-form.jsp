@@ -9,7 +9,12 @@
     <h1>${titlePage}</h1>
 
 <c:url value="/users/save" var="addAction" />
-<form:form action="${addAction}" commandName="user">
+<form:form action="${addAction}" modelAttribute="user">
+
+    <div class="has-error">
+        <form:errors path="*" class="help-block"/>
+    </div>
+
     <div class="form-group">
         <label for="formName">Name: </label>
         <form:input id="formName" path="name" class="form-control"  />
