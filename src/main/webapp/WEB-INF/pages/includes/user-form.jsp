@@ -8,8 +8,7 @@
 <%-- <h2>${user.id > 0 ? 'Edit User' : 'Add User' }</h2> --%>
     <h1>${titlePage}</h1>
 
-<c:url value="/users/save" var="addAction" />
-<form:form action="${addAction}" modelAttribute="user">
+<form:form modelAttribute="user">
 
     <div class="has-error">
         <form:errors path="*" class="help-block"/>

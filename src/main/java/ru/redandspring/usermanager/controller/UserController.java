@@ -42,21 +42,14 @@ public class UserController
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String add(final Model model)
     {
-        User user = new User();
-        model.addAttribute("user", user);
-        model.addAttribute("titlePage", "Add New User");
-        model.addAttribute("includeView", "user-form");
-        return "main";
+        return pageUserForm(model, null);
     }
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String edit(@PathVariable("id") final int id, final Model model)
     {
         User user = userService.getUser(id);
-        model.addAttribute("user", user);
-        model.addAttribute("titlePage", "Edit User " + user.getName());
-        model.addAttribute("includeView", "user-form");
-        return "main";
+        return pageUserForm(model, user);
     }
 
     @RequestMapping(value = "/remove/{id}", method = RequestMethod.GET)
@@ -66,7 +59,7 @@ public class UserController
         return "redirect:/users";
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
     public String search(@RequestParam(value="query", required = true) final String query, final Model model)
     {
         List<User> users = userService.getUsersByName(query);
@@ -78,13 +71,11 @@ public class UserController
         return "main";
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @RequestMapping(value = {"/add", "/edit/{id}"}, method = RequestMethod.POST)
     public String saveUser(@Valid final User user, final BindingResult result, final Model model)
     {
         if (result.hasErrors()) {
-            model.addAttribute("titlePage", "Form has Errors");
-            model.addAttribute("includeView", "user-form");
-            return "main";
+            return pageUserForm(model, user);
         }
 
         if (user.getId() == 0)
@@ -97,6 +88,22 @@ public class UserController
             userService.editUser(user);
         }
         return "redirect:/users";
+    }
+
+    private String pageUserForm(Model model, User user)
+    {
+        if (user == null)
+        {
+            user = new User();
+        }
+
+        String title = (user.getId() !=  0) ? "Edit User " + user.getName() : "Add New User";
+
+        model.addAttribute("titlePage", title);
+        model.addAttribute("user", user);
+        model.addAttribute("includeView", "user-form");
+
+        return "main";
     }
 
 }

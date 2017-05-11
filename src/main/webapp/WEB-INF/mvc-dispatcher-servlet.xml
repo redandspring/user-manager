@@ -12,15 +12,17 @@
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <tx:annotation-driven transaction-manager="transactionManager" />
-    <context:component-scan base-package="ru.redandspring.usermanager"/>
 
-    <context:property-placeholder location="WEB-INF/app.properties" />
 
     <mvc:annotation-driven />
     <mvc:resources mapping="/**" location="/resources/" />
     <mvc:default-servlet-handler/>
 
 
+
+    <context:component-scan base-package="ru.redandspring.usermanager"/>
+
+    <context:property-placeholder location="WEB-INF/app.properties" />
 
 
     <bean id="userDao" class="ru.redandspring.usermanager.dao.UserDaoImpl" />

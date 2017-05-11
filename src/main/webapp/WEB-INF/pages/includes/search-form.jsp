@@ -1,5 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<form class="form-inline" action="<c:url value="/users/search" />" method="post">
+<form class="form-inline" action="<c:url value="/users/search" />" method="get">
   <div class="form-group">
     <label for="searchQuery">Search by name: </label>
     <input type="text" name="query" class="form-control" id="searchQuery">
